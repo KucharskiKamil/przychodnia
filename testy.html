@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    #loginContainer {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 400px;
+      height: 400px;
+      background-color: #ccc;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+  <button id="showLoginBtn">Pokaż kwadrat</button>
+  <div id="loginContainer">
+    <input type="text" placeholder="Login">
+  </div>
+
+  <script>
+    const showLoginBtn = document.getElementById('showLoginBtn');
+    const loginContainer = document.getElementById('loginContainer');
+
+    showLoginBtn.addEventListener('click', function() {
+      loginContainer.style.display = 'block';
+    });
+
+    document.addEventListener('click', function(event) {
+      const targetElement = event.target;
+      if (!loginContainer.contains(targetElement) && targetElement !== showLoginBtn) {
+        loginContainer.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>

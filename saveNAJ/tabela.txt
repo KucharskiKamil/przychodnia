@@ -1,0 +1,94 @@
+<?php
+                    include("./php/connection.php");
+                    $zapytanie = "SELECT * FROM wizyty WHERE id_pacjenta = {$_SESSION['patient_id']}";
+                    $result = mysqli_query($con, $zapytanie);
+                    if (mysqli_num_rows($result) > 0){
+                        echo "<table class='tabelaWizyt'>
+                        <tr class='tabelaHeadery'>
+                        <th>Data wizyty</th><th>Czas wizyty</th><th>Opis wizyty</th><th>Status wizyty</th>
+                        </tr>";
+                        $i = 0;
+                        while ($row = mysqli_fetch_assoc($result)) {
+                            $i++;
+                            $czas_arr = explode(":", $row['czas_wizyty']);
+                            $godziny = intval($czas_arr[0]);
+                            $minuty = intval($czas_arr[1]);
+                            $sekundy = intval($czas_arr[2]);
+                            $formatowany_czas = "";
+                            if ($godziny > 0) {
+                                if ($godziny == 1) {
+                                    $formatowany_czas .= $godziny . " godzina";
+                                } else if ($godziny > 1 && $godziny < 5) {
+                                    $formatowany_czas .= $godziny . " godziny";
+                                } else {
+                                    $formatowany_czas .= $godziny . " godzin";
+                                }
+                            }
+                            if ($minuty > 0) {
+                                if ($formatowany_czas != "") {
+                                    $formatowany_czas .= " ";
+                                }
+                                $formatowany_czas .= $minuty . " minut";
+                            }
+                            $data = date("H:i d.m.Y", strtotime($row['data_wizyty']));
+                            if ($row['status'] == 'oczekująca') {
+                                echo "<tr class='wierszWizyty'><td class='poleWizyty'>" . $data . "</td><td class='poleWizyty'>" . $formatowany_czas . "</td><td class='poleWizyty'>" . $row['opis'] . "</td><td class='poleWizyty poleWizytyOczekujaca'>" . $row['status'] . "</td></tr>";
+                            } else if ($row['status'] == 'odbyta') {
+                                echo "<tr class='wierszWizyty'><td class='poleWizyty'>" . $data . "</td><td class='poleWizyty'>" . $formatowany_czas . "</td><td class='poleWizyty'>" . $row['opis'] . "</td><td class='poleWizyty poleWizytyOdbyta'>" . $row['status'] . "</td></tr>";
+                            } else {
+                                echo "<tr class='wierszWizyty'><td class='poleWizyty'>" . $data . "</td><td class='poleWizyty'>" . $formatowany_czas . "</td><td class='poleWizyty'>" . $row['opis'] . "</td><td class='poleWizyty poleWizytyNiePrzyszedl'>" . $row['status'] . "</td></tr>";
+                            }
+                        }
+                        echo "</table>";
+                    } else {
+                        echo "Brak wyników wyszukiwania.";
+                    }
+                    ?>
+
+
+
+
+
+
+include("./php/connection.php");
+                    $zapytanie = "SELECT * FROM badania WHERE id_pacjenta = {$_SESSION['patient_id']} ORDER BY data_badania DESC";
+                    $result = mysqli_query($con, $zapytanie);
+                    if (mysqli_num_rows($result) > 0)
+                    {
+                        echo "<div id='pacjentTablicaHolder'><div id='divPacjentTablica'>Twoje badania</div><table id='pacjentTablica'>
+                        <tr class='tabelaHeadery'>
+                        <th>Data badania</th><th>Lekarz</th><th>Rodzaj badania</th><th>Wynik</th>
+                        </tr>";
+                        while ($row = mysqli_fetch_assoc($result)) 
+                        {
+                            $data = date("d.m.Y", strtotime($row['data_badania']));
+                            $drugiezapytanie = "SELECT imie, nazwisko FROM lekarze WHERE id_lekarza = {$row['id_lekarza']}";
+                            $rezultat = mysqli_query($con,$drugiezapytanie);
+                            if (mysqli_num_rows($rezultat) == 1)
+                            {
+                                $row2 = mysqli_fetch_assoc($rezultat);
+                                echo "<tr class='wierszWizyty'><td class='poleTabeliPacjenta'>" . $data . "</td><td class='poleTabeliPacjenta'>" . $row2['imie'] ." ".$row2['nazwisko'] ."</td><td class='poleTabeliPacjenta'>" . $row['rodzaj_badania'] . "</td><td class='poleTabeliPacjenta'>" . $row['wynik'] . "</td></tr>";
+                            }
+                            else
+                            {
+                                echo "<tr class='wierszWizyty'><td class='poleTabeliPacjenta'>" . $data . "</td><td class='poleTabeliPacjenta'>Błąd ze znalezieniem lekarza!</td><td class='poleTabeliPacjenta'>" . $row['rodzaj_badania'] . "</td><td class='poleTabeliPacjenta'>" . $row['wynik'] . "</td></tr>";
+                            }
+                            
+                        }
+                        echo "</table></div>";
+                    } 
+                    else 
+                    {
+                        echo "Brak wyników wyszukiwania.";
+                    }
+
+
+
+
+
+
+
+
+
+
+                    
